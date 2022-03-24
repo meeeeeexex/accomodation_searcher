@@ -48,8 +48,7 @@ def main():
 
     if current_length != final_length:
         bot.send_message(456521208, "Нашел новый вариант")
-        # cur.execute('''select count(*) from flets;''')
-        cur.execute('''select insertion_date from flets where insertion_date=(select max(insertion_date) from flets) order by insertion_date;''')
+        cur.execute('''select link from flets where insertion_date=(select max(insertion_date) from flets) order by insertion_date;''')
         flats_storage = cur.fetchall()
         for flat in flats_storage:
             bot.send_message(456521208, flat[0])
