@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import sqlite3
 from datetime import datetime, timedelta
 import argparse
+from telegramBot import bot
 
 parser = argparse.ArgumentParser()
 cities = ['uzhgorod/', 'lvov/', 'chernovtsy/' 'ivano-frankovsk/']
@@ -44,7 +45,8 @@ def main():
         cur.execute('''select count(*) from flets;''')
     final_length = cur.fetchall()[0][0]
     if current_length != final_length:
-        print('message')
+        bot.send_message(456521208, "Нашел новый вариант")
+
     con.commit()
     con.close()
 
