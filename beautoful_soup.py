@@ -14,7 +14,7 @@ def db_conect(arg):
     cur = con.cursor()
     if arg == True:
         cur.execute('''CREATE TABLE flets
-                       (house_title text, price text, description text, link text, date text, PRIMARY KEY (link))''')
+                       (house_title text, price text, description text, link text, date text, insertion_date DATETIME, PRIMARY KEY (link))''')
         con.commit()
 
     return con, cur
@@ -39,14 +39,20 @@ def main():
                 post_date = datetime.now().date() - timedelta(days=1)
             elif 'сьогодні' in post_date:
                 post_date = datetime.now().date()
-            all_storage.append((house.h2.a['title'], description.text.strip(), price.b.text, link, post_date))
-
-        cur.executemany(f"INSERT OR IGNORE INTO flets VALUES (?,?,?,?,?)", all_storage)
+            all_storage.append((house.h2.a['title'], description.text.strip(), price.b.text, link, post_date,
+                                datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+        cur.executemany(f"INSERT OR IGNORE INTO flets VALUES (?,?,?,?,?,?)", all_storage)
         cur.execute('''select count(*) from flets;''')
+
     final_length = cur.fetchall()[0][0]
+
     if current_length != final_length:
         bot.send_message(456521208, "Нашел новый вариант")
-
+        # cur.execute('''select count(*) from flets;''')
+        cur.execute('''select link from flets where insertion_date=(select min(insertion_date) from flets););''')
+        flats_storage = cur.fetchall()
+        for flat in flats_storage:
+            bot.send_message(456521208, flat[0])
     con.commit()
     con.close()
 
